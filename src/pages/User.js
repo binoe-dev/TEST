@@ -1,51 +1,56 @@
-import { useEffect, useState } from "react";
+import Reac, { useEffect, useState} from 'react'
+import userService from '../controllers/userController'
 
+ 
 const User = () => {
 
-    const [ user, setUser] = useState(null)
+    const [user, setUser] = useState(null)
+    const userServiceController = new userService();
 
-    useEffect( () => {
-        fetch("http://localhost:3000/user/getUsers").then((res) => {
-            return res.json();
-        }).then((resp) => {
-            setUser(resp)
+    const tableHeaderFontStyle = {
+        fontWeight: 'bold',
+        backgroundColor: '#000000'
+    }
+    const tableHeaderStyle = {
+        backgroundColor: '#000000 !important' , // Màu sắc nền
+        color: '#ffffff !important' // Màu chữ
+        // Các thuộc tính CSS khác tùy ý
+      };
+    useEffect(() => {
+        userServiceController.getUsersController().then( data => {
+            setUser(data)
         }).catch((err) => {
-            console.log(err.message);
+            console.log(err.message)
+            throw err;
         })
     }, [])
-
     return (
         <div className="container">
             <div className="card">
                 <div className="card-title">
-                    <h2>User dasboard</h2>
+                    <h2>Users</h2>
                 </div>
                 <div className="card-body">
                     <table className="table table-bordered">
-                        <thead className="bg-dark text-white">
-                            <tr>
+                        <thead style={tableHeaderFontStyle} >
+                            <tr >
                                 <td>ID</td>
-                                <td>Name</td>
+                                <td>FirstName</td>
                                 <td>LastName</td>
                                 <td>Age</td>
                             </tr>
                         </thead>
                         <tbody>
-                         { user &&
-                            user.map( item => (
-                                <tr key = {item.id}>
-                                    <td>{item.id}</td>
-                                    <td>{item.first_name}</td>
-                                    <td>{item.last_name}</td>
-                                    <td>{item.age}</td>
-                                    <td>
-                                        <a className="btn btn-success">Edit</a>
-                                        <a className="btn btn-danger">Remove</a>
-                                        <a className="btn btn-primary">Detail</a>
-                                    </td>
-                                </tr>
-                            ))
-                         }
+                            { user &&
+                                user.map( item => (
+                                    <tr key={item.id}>
+                                        <td>{item.id}</td>
+                                        <td>{item.first_name}</td>
+                                        <td>{item.last_name}</td>
+                                        <td>{item.age}</td>
+                                    </tr>
+                                ))
+                            }
                         </tbody>
                     </table>
                 </div>
@@ -54,4 +59,4 @@ const User = () => {
     )
 }
 
-export default User;
+export default User
